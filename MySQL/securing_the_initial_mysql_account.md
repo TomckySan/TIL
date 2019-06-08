@@ -20,7 +20,7 @@ https://mariadb.com/kb/ja/mysql_secure_installation/
 
 ## まずはユーザーの確認
 
-```
+```sql
 $ mysql -uroot
 mysql> SELECT Host, User, Password FROM mysql.user;
 +------------------------------------------------+------+----------+
@@ -48,7 +48,7 @@ $ mysql
 
 匿名ユーザーを削除するには、例えば次のようにすれば良い。  
 
-```
+```sql
 mysql> DROP USER ''@'localhost';
 mysql> DROP USER ''@'host_name';
 ```
@@ -57,7 +57,7 @@ mysql> DROP USER ''@'host_name';
 `DROP USER` ではホストも指定する必要があるため、一回のコマンドですべての匿名ユーザーを削除することはできない。  
 よって `DELETE` を使って削除する。
 
-```
+```sql
 mysql> DELETE FROM mysql.user WHERE User='';
 mysql> FLUSH PRIVILEGES;
 ```
@@ -67,8 +67,8 @@ https://dev.mysql.com/doc/refman/5.6/ja/privilege-changes.html
 
 以下、削除できた場合。
 
-```
-MariaDB [(none)]> select Host, User, Password from mysql.user;
+```sql
+mysql> select Host, User, Password from mysql.user;
 +------------------------------------------------+------+----------+
 | Host                                           | User | Password |
 +------------------------------------------------+------+----------+
@@ -86,3 +86,45 @@ MariaDB [(none)]> select Host, User, Password from mysql.user;
 $ mysql
 ERROR 1045 (28000): Access denied for user 'host_name'@'localhost' (using password: NO)
 ```
+
+## testデータベースの削除
+
+testデータベースはどのユーザーでもアクセスできる試行用のデータベース。  
+残しておきたい理由がないならば削除する。  
+
+```sql
+mysql> DROP DATABASE IF EXISTS test;
+```
+
+## rootにパスワードを設定
+
+TODO...
+
+## リモートからのroot接続を禁止
+
+```sql
+mysql> select Host, User, Password from mysql.user;
++------------------------------------------------+------+----------+
+| Host                                           | User | Password |
++------------------------------------------------+------+----------+
+| localhost                                      | root |          |
+| host_name                                      | root |          |
+| 127.0.0.1                                      | root |          |
+| ::1                                            | root |          |
+| %                                              | root |          |
++------------------------------------------------+------+----------+
+5 rows in set (0.000 sec)
+```
+
+例えば、Hostに%があるこの状態は、どこからでもMySQLのrootに接続できる。  
+以下を実行することでローカルホスト以外のroot接続を不可にする。  
+
+```
+DELETE FROM mysql.user WHERE User = 'root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+```
+
+ちなみに `::1` はIPv6のループバックアドレス。
+
+## 参考リファレンスマニュアル
+
+https://dev.mysql.com/doc/refman/5.6/ja/default-privileges.html
