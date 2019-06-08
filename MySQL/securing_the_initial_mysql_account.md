@@ -4,7 +4,7 @@ https://dev.mysql.com/doc/refman/5.6/ja/mysql-secure-installation.html
 https://dev.mysql.com/doc/refman/8.0/en/mysql-secure-installation.html
 https://mariadb.com/kb/ja/mysql_secure_installation/
 
-※ 5.6までは引数と取らないコマンドだったが、5.7以降は多くの引数が用意されている。  
+※ 5.6までは引数を取らないコマンドだったが、5.7以降は多くの引数が用意されている。  
 ※ `/usr/bin/mysql_secure_installation` がスクリプトの実体。  
 
 インストール直後に実行することでセキュリティを向上させることができる。  
