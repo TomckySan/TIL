@@ -1,4 +1,4 @@
-（ファイルの区別が面倒なものをとりあえず書く用）
+## データベース・Eloquent
 
 joinするとき同名のカラムが上書きされてしまうため、selectで指定する。
 
@@ -21,4 +21,42 @@ return redirect()->route('posts.index', ['category' => $category]);
 
 ```php
 return redirect()->action('PostsController@index', ['category' => $category]);
+```
+
+## ランダムトークン生成
+
+```php
+use Illuminate\Support\Str;
+
+$token = Str::random(32);
+```
+
+## ハッシュ生成
+
+```php
+use Illuminate\Support\Facades\Hash;
+
+Hash::make('foo');
+```
+
+## フォームに直前のリクエストデータを詰める
+
+```php
+<input type="text" name="username" value="{{ old('username') }}">
+```
+
+## 中間テーブルへのデータ保存
+
+```php
+App\User::find(1)->roles()->save($role);
+// ↑これでできるけど
+
+$user = new User();
+$user->roles()->save($role);
+// これはNG
+
+$user = new User();
+$user->save();
+$user->roles()->save($role);
+// 一度saveしないとダメ
 ```
